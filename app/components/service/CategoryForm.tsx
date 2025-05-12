@@ -17,6 +17,7 @@ const CategoryForm = ({ fetchCategories, setCreate, editData }: CategoriesFormPr
         name: '',
         info: '',
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         if (editData) {
@@ -34,8 +35,15 @@ const CategoryForm = ({ fetchCategories, setCreate, editData }: CategoriesFormPr
         setCategoryData(prev => ({ ...prev, [name]: value }));
     };
 
+    const resetForm = () => {
+        setCategoryData({ name: '', info: '' });
+        setCreate(false);
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsSubmitting(true);
+        
         try {
             const url = editData
                 ? api.endpoints.categoryDetail(editData.slug)
@@ -51,15 +59,19 @@ const CategoryForm = ({ fetchCategories, setCreate, editData }: CategoriesFormPr
             });
 
             const result = await response.json();
+            
             if (!response.ok) {
                 throw new Error(result.message || 'Failed to save category');
             }
-            toast.success(result.message || 'Category saved successfully');
-            setCreate(false);
+
+            toast.success(result.message || `${editData ? 'Updated' : 'Created'} category successfully`);
+            resetForm();
             fetchCategories();
         } catch (error) {
             console.error('Error saving category:', error);
-            toast.error(error instanceof Error ? error.message : 'Failed to save category');
+            toast.error(error instanceof Error ? error.message : 'Failed to save category. Please try again.');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -78,6 +90,7 @@ const CategoryForm = ({ fetchCategories, setCreate, editData }: CategoriesFormPr
                             className="form-input dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400"
                             placeholder="Enter category name"
                             required
+                            disabled={isSubmitting}
                         />
                     </div>
                     <div>
@@ -90,22 +103,25 @@ const CategoryForm = ({ fetchCategories, setCreate, editData }: CategoriesFormPr
                             className="form-input dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400"
                             placeholder="Enter category description"
                             rows={3}
+                            disabled={isSubmitting}
                         />
                     </div>
                 </div>
                 <div className="mt-6 flex justify-end space-x-3">
                     <button
                         type="button"
-                        onClick={() => setCreate(false)}
+                        onClick={resetForm}
                         className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600"
+                        disabled={isSubmitting}
                     >
                         Cancel
                     </button>
                     <button
                         type="submit"
-                        className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+                        className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={isSubmitting}
                     >
-                        {editData ? 'Update' : 'Create'} Category
+                        {isSubmitting ? 'Saving...' : editData ? 'Update' : 'Create'} Category
                     </button>
                 </div>
             </form>

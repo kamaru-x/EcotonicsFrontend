@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useApi } from '@/app/context/ApiContext'
 import { toast } from 'react-toastify'
 
@@ -10,41 +10,65 @@ import CategoriesTable from '@/app/components/service/CategoriesTable'
 import CategoryForm from '@/app/components/service/CategoryForm'
 import { Category } from '@/app/types/categories'
 
+interface CategoryStats {
+    total_categories: number;
+    active_categories: number;
+    inactive_categories: number;
+}
 
-const page = () => {
+const CategoriesPage = () => {
     const api = useApi()
 
     const [create, setCreate] = useState(false)
     const [editCategory, setEditCategory] = useState<Category | null>(null)
     const [categories, setCategories] = useState<Category[]>([])
     
-    const [totalCategories, setTotalCategories] = useState(0)
-    const [activeCategories, setActiveCategories] = useState(0)
-    const [inactiveCategories, setInactiveCategories] = useState(0)
+    const [stats, setStats] = useState<CategoryStats>({
+        total_categories: 0,
+        active_categories: 0,
+        inactive_categories: 0
+    })
 
-    const fetchCategories = async () => {
+    const fetchCategories = useCallback(async () => {
         try {
             const response = await api.fetch(api.endpoints.listCategories);
             const result = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(result.message || 'Failed to fetch categories');
+            }
+
             const data = result.data
             setCategories(data.categories)
-            setTotalCategories(data.total_categories)
-            setActiveCategories(data.active_categories)
-            setInactiveCategories(data.inactive_categories)
+            setStats({
+                total_categories: data.total_categories,
+                active_categories: data.active_categories,
+                inactive_categories: data.inactive_categories
+            })
         } catch (error) {
-            console.log('Error fetching categories:', error)
-            toast.error('Failed to fetch categories')
+            console.error('Error fetching categories:', error)
+            toast.error(error instanceof Error ? error.message : 'Failed to fetch categories')
         }
-    }
+    }, [api])
 
     const handleEdit = (category: Category) => {
         setEditCategory(category);
         setCreate(true);
     }
 
+    const handleCreate = () => {
+        setEditCategory(null);
+        setCreate(true);
+    }
+
+    const handleCancel = () => {
+        setEditCategory(null);
+        setCreate(false);
+    }
+
     useEffect(() => {
         fetchCategories()
-    }, [api])
+    }, [fetchCategories])
 
     return (
         <div className="min-h-screen mx-5">
@@ -54,40 +78,55 @@ const page = () => {
                         color="bg-gradient-to-r from-blue-400 to-blue-500" 
                         icon="fas fa-gear" 
                         title="Total Categories" 
-                        value={totalCategories}
+                        value={stats.total_categories}
                     />
                     <OverviewCard 
-                        color="bg-gradient-to-r from-blue-400 to-blue-500" 
-                        icon="fas fa-gear" 
+                        color="bg-gradient-to-r from-green-400 to-green-500" 
+                        icon="fas fa-check-circle" 
                         title="Active Categories" 
-                        value={activeCategories}
+                        value={stats.active_categories}
                     />
                     <OverviewCard 
-                        color="bg-gradient-to-r from-blue-400 to-blue-500" 
-                        icon="fas fa-gear" 
+                        color="bg-gradient-to-r from-red-400 to-red-500" 
+                        icon="fas fa-times-circle" 
                         title="Inactive Categories" 
-                        value={inactiveCategories}
+                        value={stats.inactive_categories}
                     />
                 </div>
 
                 <div className='mt-8 pb-8'>
                     <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-xl font-semibold text-gray-800 dark:text-white"> {create ? 'Create Category' : 'Service Categories'}</h2>
-                        {
-                            !create && (
-                                <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200" onClick={() => setCreate(!create)}>Add Category</button>
-                            )
-                        }
+                        <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+                            {create ? (editCategory ? 'Edit Category' : 'Create Category') : 'Service Categories'}
+                        </h2>
+                        {!create && (
+                            <button 
+                                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200"
+                                onClick={handleCreate}
+                            >
+                                Add Category
+                            </button>
+                        )}
                     </div>
-                    {
-                        create ? <CategoryForm fetchCategories={fetchCategories} setCreate={setCreate} editData={editCategory}/> : <CategoriesTable categories={categories} fetchCategories={fetchCategories} onEdit={handleEdit} />
-                    }
+                    {create ? (
+                        <CategoryForm 
+                            fetchCategories={fetchCategories} 
+                            setCreate={handleCancel} 
+                            editData={editCategory}
+                        />
+                    ) : (
+                        <CategoriesTable 
+                            categories={categories} 
+                            fetchCategories={fetchCategories} 
+                            onEdit={handleEdit} 
+                        />
+                    )}
                 </div>
             </div>
 
-                <ThemeToggle />
-            </div>
-        )
-    }
+            <ThemeToggle />
+        </div>
+    )
+}
 
-export default page
+export default CategoriesPage

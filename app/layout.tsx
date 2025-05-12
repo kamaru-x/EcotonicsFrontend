@@ -4,6 +4,8 @@ import "./globals.css";
 import { ApiProvider } from "./context/ApiContext";
 import { DeleteModalProvider } from "./context/DeleteModalContext";
 import { ThemeProvider } from "./context/ThemeProvider";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -41,6 +43,18 @@ export default function RootLayout({
           <ApiProvider>
             <DeleteModalProvider>
               {children}
+              <ToastContainer
+                position="top-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+              />
             </DeleteModalProvider>
           </ApiProvider>
         </ThemeProvider>

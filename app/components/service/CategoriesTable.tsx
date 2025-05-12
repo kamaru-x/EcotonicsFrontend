@@ -16,24 +16,25 @@ const CategoriesTable = ({ categories, fetchCategories, onEdit }: CategoriesTabl
 
     const deleteCategory = async (slug: string) => {
         try {
-            const response = await api.fetch(api.endpoints.categoryDetail(slug), { method: 'DELETE' })
+            const response = await api.fetch(api.endpoints.categoryDetail(slug), { 
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
             const result = await response.json()
 
             if (response.ok) {
+                toast.success(result.message || 'Category deleted successfully')
                 fetchCategories()
-                toast.success(result.message)
             } else {
-                toast.error(result.message)
+                toast.error(result.message || 'Failed to delete category')
             }
         } catch (error) {
-            console.log('Error deleting category:', error)
-            toast.error('Failed to delete category')
+            console.error('Error deleting category:', error)
+            toast.error('Failed to delete category. Please try again.')
         }
     }
-
-    const onEditClick = (category: Category) => {
-        onEdit(category);
-    };
 
     const handleDeleteClick = (itemType: string, slug: string, deleteFunction: () => void) => {
         showDeleteModal(itemType, deleteFunction);
@@ -86,7 +87,7 @@ const CategoriesTable = ({ categories, fetchCategories, onEdit }: CategoriesTabl
                                     </td>
                                     <td className="px-6 py-6 text-center whitespace-nowrap text-sm font-medium">
                                         <button
-                                            onClick={() => onEditClick(category)}
+                                            onClick={() => onEdit(category)}
                                             className="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-400 transition-colors duration-150 mx-4"
                                             title="Edit category"
                                         >
