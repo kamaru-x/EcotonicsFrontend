@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Header from '@/app/components/Header'
+import Sidebar from '@/app/components/Sidebar'
 
 export default function PagesLayout({
   children,
@@ -9,9 +10,14 @@ export default function PagesLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen mb-10">
-      <Header />
-      {children}
+    <div className="min-h-screen">
+      <Sidebar />
+      <div className="lg:ml-[calc(16rem+2.5rem)] px-4 lg:px-0">
+        <Header />
+        <main className="pt-20 lg:pt-20 -mx-4 lg:-ml-5 lg:mr-0">
+          {children}
+        </main>
+      </div>
     </div>
   )
 }

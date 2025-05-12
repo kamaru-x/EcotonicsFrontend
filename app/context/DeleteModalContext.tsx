@@ -1,7 +1,7 @@
 'use client'
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
+import DeleteConfirmationModal from '../components/elements/DeleteConfirmationModal';
 
 interface DeleteModalContextType {
     showDeleteModal: (itemType: string, onConfirm: () => void) => void;
