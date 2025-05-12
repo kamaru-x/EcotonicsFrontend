@@ -7,9 +7,10 @@ import { Category } from '@/app/types/categories'
 interface CategoriesTableProps {
     categories: Category[];
     fetchCategories: () => void;
+    onEdit: (category: Category) => void;
 }
 
-const CategoriesTable = ({ categories, fetchCategories }: CategoriesTableProps) => {
+const CategoriesTable = ({ categories, fetchCategories, onEdit }: CategoriesTableProps) => {
     const api = useApi()
     const { showDeleteModal } = useDeleteModal()
 
@@ -29,6 +30,10 @@ const CategoriesTable = ({ categories, fetchCategories }: CategoriesTableProps) 
             toast.error('Failed to delete category')
         }
     }
+
+    const onEditClick = (category: Category) => {
+        onEdit(category);
+    };
 
     const handleDeleteClick = (itemType: string, slug: string, deleteFunction: () => void) => {
         showDeleteModal(itemType, deleteFunction);
@@ -80,6 +85,13 @@ const CategoriesTable = ({ categories, fetchCategories }: CategoriesTableProps) 
                                         </span>
                                     </td>
                                     <td className="px-6 py-6 text-center whitespace-nowrap text-sm font-medium">
+                                        <button
+                                            onClick={() => onEditClick(category)}
+                                            className="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-400 transition-colors duration-150 mx-4"
+                                            title="Edit category"
+                                        >
+                                            <i className="fas fa-edit"></i>
+                                        </button>
                                         <button
                                             onClick={() => handleDeleteClick('category', category.slug, () => deleteCategory(category.slug))}
                                             className="text-red-600 hover:text-red-900 dark:text-red-500 dark:hover:text-red-400 transition-colors duration-150 mx-4"

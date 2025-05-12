@@ -80,7 +80,7 @@ const page = () => {
                         }
                     </div>
                     {
-                        create ? <CategoryForm fetchCategories={fetchCategories} setCreate={setCreate} editData={editCategory}/> : <CategoriesTable categories={categories} fetchCategories={fetchCategories} onUpdate={fetchCategories} onEdit={handleEdit} />
+                        create ? <CategoryForm fetchCategories={fetchCategories} setCreate={setCreate} editData={editCategory}/> : <CategoriesTable categories={categories} fetchCategories={fetchCategories} onEdit={handleEdit} />
                     }
                 </div>
             </div>
