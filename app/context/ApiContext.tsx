@@ -8,6 +8,15 @@ interface ApiEndpoints {
 
     listCategories: string;
     categoryDetail: (slug: string) => string;
+
+    listServices: string;
+    serviceDetail: (slug: string) => string;
+
+    listDepartments: string;
+    departmentDetail: (slug: string) => string;
+
+    listDesignations: string;
+    designationDetail: (slug: string) => string;
 }
 
 interface Api {
@@ -19,8 +28,8 @@ interface Api {
 }
 
 const api: Api = {
-    // baseUrl: 'https://dearme.pythonanywhere.com/api',
-    baseUrl: 'http://127.0.0.1:8000/api',
+    baseUrl: 'https://ecotonicserp.pythonanywhere.com/api',
+    // baseUrl: 'http://127.0.0.1:8000/api',
 
     endpoints: {
         login: '/auth/token/',
@@ -28,6 +37,15 @@ const api: Api = {
 
         listCategories: '/service/categories/',
         categoryDetail: (slug: string) => `/service/category/${slug}/`,
+
+        listServices: '/service/services/',
+        serviceDetail: (slug: string) => `/service/service/${slug}/`,
+
+        listDepartments: '/workforce/departments/',
+        departmentDetail: (slug: string) => `/workforce/department/${slug}/`,
+
+        listDesignations: '/workforce/designations/',
+        designationDetail: (slug: string) => `/workforce/designation/${slug}/`,
     },
 
     getHeaders: (withAuth: boolean = true): HeadersInit => {

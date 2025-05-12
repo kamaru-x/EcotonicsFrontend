@@ -3,39 +3,39 @@
 import React, { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import { useApi } from '@/app/context/ApiContext'
-import { Category } from '@/app/types/interface';
+import { Department } from '@/app/types/interface';
 
-interface CategoriesFormProps {
-    fetchCategories: () => void;
+interface DepartmentsFormProps {
+    fetchDepartments: () => void;
     setCreate: (create: boolean) => void;
-    editData: Category | null;
+    editData: Department | null;
 }
 
-const CategoryForm = ({ fetchCategories, setCreate, editData }: CategoriesFormProps) => {
+const DepartmentForm = ({ fetchDepartments, setCreate, editData }: DepartmentsFormProps) => {
     const api = useApi();
-    const [categoryData, setCategoryData] = useState({
+    const [departmentData, setDepartmentData] = useState({
         name: '',
         info: '',
     });
 
     useEffect(() => {
         if (editData) {
-            setCategoryData({
+            setDepartmentData({
                 name: editData.name || '',
                 info: editData.info || '',
             });
         } else {
-            setCategoryData({ name: '', info: '' });
+            setDepartmentData({ name: '', info: '' });
         }
     }, [editData]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setCategoryData(prev => ({ ...prev, [name]: value }));
+        setDepartmentData(prev => ({ ...prev, [name]: value }));
     };
 
     const resetForm = () => {
-        setCategoryData({ name: '', info: '' });
+        setDepartmentData({ name: '', info: '' });
         setCreate(false);
     };
 
@@ -43,8 +43,8 @@ const CategoryForm = ({ fetchCategories, setCreate, editData }: CategoriesFormPr
         e.preventDefault();
         try {
             const url = editData
-                ? api.endpoints.categoryDetail(editData.slug)
-                : api.endpoints.listCategories;
+                ? api.endpoints.departmentDetail(editData.slug)
+                : api.endpoints.listDepartments;
             const method = editData ? 'PUT' : 'POST';
 
             const response = await api.fetch(url, {
@@ -52,38 +52,37 @@ const CategoryForm = ({ fetchCategories, setCreate, editData }: CategoriesFormPr
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(categoryData),
+                body: JSON.stringify(departmentData),
             });
 
             const result = await response.json();
             
             if (!response.ok) {
-                throw new Error(result.message || 'Failed to save category');
+                throw new Error(result.message || 'Failed to save department');
             }
 
-            toast.success(result.message || `${editData ? 'Updated' : 'Created'} category successfully`);
+            toast.success(result.message || `${editData ? 'Updated' : 'Created'} department successfully`);
             resetForm();
-            fetchCategories();
+            fetchDepartments();
         } catch (error) {
-            console.error('Error saving category:', error);
-            toast.error(error instanceof Error ? error.message : 'Failed to save category. Please try again.');
+            console.error('Error saving department:', error);
+            toast.error(error instanceof Error ? error.message : 'Failed to save department. Please try again.');
         }
     };
-
     return (
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
             <form onSubmit={handleSubmit}>
                 <div className="space-y-4">
                     <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Category Name</label>
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Department Name</label>
                         <input
                             onChange={handleChange}
                             type="text"
                             id="name"
                             name="name"
-                            value={categoryData.name}
+                            value={departmentData.name}
                             className="form-input dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400"
-                            placeholder="Enter category name"
+                            placeholder="Enter department name"
                             required
                         />
                     </div>
@@ -93,9 +92,9 @@ const CategoryForm = ({ fetchCategories, setCreate, editData }: CategoriesFormPr
                             onChange={handleChange}
                             id="info"
                             name="info"
-                            value={categoryData.info}
+                            value={departmentData.info}
                             className="form-input dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:placeholder-gray-400"
-                            placeholder="Enter category description"
+                            placeholder="Enter department description"
                             rows={3}
                         />
                     </div>
@@ -112,12 +111,12 @@ const CategoryForm = ({ fetchCategories, setCreate, editData }: CategoriesFormPr
                         type="submit"
                         className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
                     >
-                        {editData ? 'Update' : 'Create'} Category
+                        {editData ? 'Update' : 'Create'} Department
                     </button>
                 </div>
             </form>
         </div>
-    );
-};
+    )
+}
 
-export default CategoryForm;
+export default DepartmentForm

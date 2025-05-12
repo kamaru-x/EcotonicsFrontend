@@ -6,70 +6,70 @@ import { toast } from 'react-toastify'
 
 import OverviewCard from '@/app/components/elements/OverviewCard'
 import ThemeToggle from '@/app/components/ThemeToggle'
-import CategoriesTable from '@/app/components/service/CategoriesTable'
-import CategoryForm from '@/app/components/service/CategoryForm'
-import { Category } from '@/app/types/interface'
+import { Category, Designation } from '@/app/types/interface'
+import DesignationTable from '@/app/components/workforce/DesignationTable'
+import DesignationForm from '@/app/components/workforce/DesignationForm'
 
-interface CategoryStats {
-    total_categories: number;
-    active_categories: number;
-    inactive_categories: number;
+interface DesignationStats {
+    total_designations: number;
+    active_designations: number;
+    inactive_designations: number;
 }
 
-const CategoriesPage = () => {
+const page = () => {
     const api = useApi()
 
     const [create, setCreate] = useState(false)
-    const [editCategory, setEditCategory] = useState<Category | null>(null)
-    const [categories, setCategories] = useState<Category[]>([])
+    const [editDesignation, setEditDesignation] = useState<Designation | null>(null)
+    const [designations, setDesignations] = useState<Designation[]>([])
     
-    const [stats, setStats] = useState<CategoryStats>({
-        total_categories: 0,
-        active_categories: 0,
-        inactive_categories: 0
+    const [stats, setStats] = useState<DesignationStats>({
+        total_designations: 0,
+        active_designations: 0,
+        inactive_designations: 0
     })
 
-    const fetchCategories = useCallback(async () => {
+    const fetchDesignations = useCallback(async () => {
         try {
-            const response = await api.fetch(api.endpoints.listCategories);
+            const response = await api.fetch(api.endpoints.listDesignations);
             const result = await response.json();
             
             if (!response.ok) {
-                throw new Error(result.message || 'Failed to fetch categories');
+                throw new Error(result.message || 'Failed to fetch designations');
             }
 
             const data = result.data
-            setCategories(data.categories)
+            setDesignations(data.designations)
             setStats({
-                total_categories: data.total_categories,
-                active_categories: data.active_categories,
-                inactive_categories: data.inactive_categories
+                total_designations: data.total_designations,
+                active_designations: data.active_designations,
+                inactive_designations: data.inactive_designations
             })
         } catch (error) {
-            console.error('Error fetching categories:', error)
-            toast.error(error instanceof Error ? error.message : 'Failed to fetch categories')
+            console.error('Error fetching designations:', error)
+            toast.error(error instanceof Error ? error.message : 'Failed to fetch designations')
         }
     }, [api])
 
-    const handleEdit = (category: Category) => {
-        setEditCategory(category);
+    const handleEdit = (designation: Designation) => {
+        setEditDesignation(designation);
         setCreate(true);
     }
 
     const handleCreate = () => {
-        setEditCategory(null);
+        setEditDesignation(null);
         setCreate(true);
     }
 
     const handleCancel = () => {
-        setEditCategory(null);
+        setEditDesignation(null);
         setCreate(false);
     }
 
     useEffect(() => {
-        fetchCategories()
-    }, [fetchCategories])
-
+        fetchDesignations()
+    }, [fetchDesignations])
+    
     return (
         <div className="min-h-screen mx-5">
             <div className="w-full">
@@ -77,47 +77,47 @@ const CategoriesPage = () => {
                     <OverviewCard 
                         color="bg-gradient-to-r from-blue-400 to-blue-500" 
                         icon="fas fa-gear" 
-                        title="Total Categories" 
-                        value={stats.total_categories}
+                        title="Total Designations" 
+                        value={0}
                     />
                     <OverviewCard 
                         color="bg-gradient-to-r from-blue-400 to-blue-500" 
                         icon="fas fa-check-circle" 
-                        title="Active Categories" 
-                        value={stats.active_categories}
+                        title="Active Designations" 
+                        value={0}
                     />
                     <OverviewCard 
                         color="bg-gradient-to-r from-blue-400 to-blue-500" 
                         icon="fas fa-times-circle" 
-                        title="Inactive Categories" 
-                        value={stats.inactive_categories}
+                        title="Inactive Designations" 
+                        value={0}
                     />
                 </div>
 
                 <div className='mt-8 pb-8'>
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-                            {create ? (editCategory ? 'Edit Category' : 'Create Category') : 'Service Categories'}
+                            {create ? (editDesignation ? 'Edit Designation' : 'Create Designation') : 'Workforce Designations'}
                         </h2>
                         {!create && (
                             <button 
                                 className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200"
                                 onClick={handleCreate}
                             >
-                                Add Category
+                                Add Designation
                             </button>
                         )}
                     </div>
                     {create ? (
-                        <CategoryForm 
-                            fetchCategories={fetchCategories} 
+                        <DesignationForm 
+                            fetchDesignations={fetchDesignations} 
                             setCreate={handleCancel} 
-                            editData={editCategory}
+                            editData={editDesignation}
                         />
                     ) : (
-                        <CategoriesTable 
-                            categories={categories} 
-                            fetchCategories={fetchCategories} 
+                        <DesignationTable 
+                            designations={designations} 
+                            fetchDesignations={fetchDesignations} 
                             onEdit={handleEdit} 
                         />
                     )}
@@ -129,4 +129,4 @@ const CategoriesPage = () => {
     )
 }
 
-export default CategoriesPage
+export default page

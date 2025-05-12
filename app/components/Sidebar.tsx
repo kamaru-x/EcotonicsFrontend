@@ -8,7 +8,7 @@ const Sidebar = () => {
     const pathname = usePathname();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isServicesOpen, setIsServicesOpen] = useState(false);
-
+    const [isWorkforceOpen, setIsWorkforceOpen] = useState(false);
     useEffect(() => {
         const handleToggleMobileMenu = (event: CustomEvent) => {
             setIsMobileMenuOpen(event.detail);
@@ -32,6 +32,10 @@ const Sidebar = () => {
 
     const toggleServices = () => {
         setIsServicesOpen(!isServicesOpen);
+    };
+
+    const toggleWorkforce = () => {
+        setIsWorkforceOpen(!isWorkforceOpen);
     };
 
     return (
@@ -111,6 +115,54 @@ const Sidebar = () => {
                                 >
                                     <i className="fas fa-list w-5"></i>
                                     <span>Services</span>
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* Services Dropdown */}
+                        <div className="relative">
+                            <button
+                                onClick={toggleWorkforce}
+                                className={`w-full flex items-center justify-between space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                                    pathname.startsWith('/workforce')
+                                        ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
+                                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                                }`}
+                            >
+                                <div className="flex items-center space-x-3">
+                                    <i className="fas fa-users w-5"></i>
+                                    <span>Workforce</span>
+                                </div>
+                                <i className={`fas fa-chevron-${isWorkforceOpen ? 'up' : 'down'} transition-transform duration-200`}></i>
+                            </button>
+                            
+                            {/* Dropdown Menu */}
+                            <div className={`pl-12 space-y-1 mt-1 transition-all duration-200 ${
+                                isWorkforceOpen ? 'opacity-100 max-h-48' : 'opacity-0 max-h-0 overflow-hidden'
+                            }`}>
+                                <Link
+                                    href="/workforce/departments"
+                                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors ${
+                                        pathname === '/workforce/departments'
+                                            ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
+                                            : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                                    }`}
+                                    onClick={closeMobileMenu}
+                                >
+                                    <i className="fas fa-building w-5"></i>
+                                    <span>Departments</span>
+                                </Link>
+                                <Link
+                                    href="/workforce/designations"
+                                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors ${
+                                        pathname === '/workforce/designations'
+                                            ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
+                                            : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                                    }`}
+                                    onClick={closeMobileMenu}
+                                >
+                                    <i className="fas fa-list w-5"></i>
+                                    <span>Designations</span>
                                 </Link>
                             </div>
                         </div>
