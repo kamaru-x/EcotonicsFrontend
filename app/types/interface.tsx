@@ -43,3 +43,33 @@ export interface Designation {
     name: string;
     info: string;
 }
+
+export interface User {
+    id: number;
+    first_name: string;
+    mobile: string;
+    email: string;
+    username: string;
+    photo: string;
+}
+
+export interface Staff {
+    id: number;
+    slug: string;
+    status: Status;
+    user_data: User;
+    department: string;
+    designation: string;
+    department_data: Department;
+    designation_data: Designation;
+    location: string;
+    aadhar: string;
+    blood: string;
+    contact_name: string;
+    contact_number: string;
+    relation: string;
+    address: string;
+    staff_wage: number;
+    username: string;
+    password: string;
+}

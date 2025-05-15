@@ -17,6 +17,9 @@ interface ApiEndpoints {
 
     listDesignations: string;
     designationDetail: (slug: string) => string;
+
+    listStaffs: string;
+    staffDetail: (slug: string) => string;
 }
 
 interface Api {
@@ -46,6 +49,9 @@ const api: Api = {
 
         listDesignations: '/workforce/designations/',
         designationDetail: (slug: string) => `/workforce/designation/${slug}/`,
+
+        listStaffs: '/workforce/staffs/',
+        staffDetail: (slug: string) => `/workforce/staff/${slug}/`,
     },
 
     getHeaders: (withAuth: boolean = true): HeadersInit => {
@@ -65,12 +71,19 @@ const api: Api = {
     },
 
     fetch: async (endpoint: string, options: RequestInit & { withAuth?: boolean } = {}) => {
-        const { withAuth = true, headers, ...rest } = options;
+        const { withAuth = true, headers, body, ...rest } = options;
+        let finalHeaders = { ...api.getHeaders(withAuth), ...headers };
+
+        // If body is FormData, remove Content-Type so browser sets it
+        if (body instanceof FormData) {
+            if ('Content-Type' in finalHeaders) {
+                delete finalHeaders['Content-Type'];
+            }
+        }
+
         return fetch(`${api.baseUrl}${endpoint}`, {
-            headers: {
-                ...api.getHeaders(withAuth),
-                ...headers
-            },
+            headers: finalHeaders,
+            body,
             ...rest
         });
     }

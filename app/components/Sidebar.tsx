@@ -164,6 +164,18 @@ const Sidebar = () => {
                                     <i className="fas fa-list w-5"></i>
                                     <span>Designations</span>
                                 </Link>
+                                <Link
+                                    href="/workforce/staffs"
+                                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors ${
+                                        pathname === '/workforce/staffs'
+                                            ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
+                                            : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                                    }`}
+                                    onClick={closeMobileMenu}
+                                >
+                                    <i className="fas fa-users w-5"></i>
+                                    <span>Staffs</span>
+                                </Link>
                             </div>
                         </div>
                     </div>

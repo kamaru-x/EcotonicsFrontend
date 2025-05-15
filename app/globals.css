@@ -57,6 +57,13 @@ body {
     padding-right: 2.5rem;
   }
 
+  .form-file {
+    @apply mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 px-4 py-1.5 
+    focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800
+    transition-all duration-200 ease-in-out
+    text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-800;
+  }
+
   .form-select:hover {
     @apply border-blue-400 dark:border-blue-500;
   }
