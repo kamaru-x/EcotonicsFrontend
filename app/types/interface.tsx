@@ -3,6 +3,11 @@ interface Status {
     name: string;
 }
 
+export interface CustomerType {
+    id: string;
+    name: string;
+}
+
 export interface Category {
     id: number;
     slug: string;
@@ -72,4 +77,15 @@ export interface Staff {
     staff_wage: number;
     username: string;
     password: string;
+}
+
+export interface Customer {
+    id: number;
+    slug: string;
+    status: Status;
+    type: CustomerType;
+    name: string;
+    location: string;
+    mobile: string;
+    email: string;
 }

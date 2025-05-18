@@ -6,7 +6,7 @@ import { toast } from 'react-toastify'
 
 import OverviewCard from '@/app/components/elements/OverviewCard'
 import ThemeToggle from '@/app/components/ThemeToggle'
-import { Service, Category } from '@/app/types/interface'
+import { Service } from '@/app/types/interface'
 import ServicesTable from '@/app/components/service/ServicesTable'
 import ServicesForm from '@/app/components/service/ServicesForm'
 

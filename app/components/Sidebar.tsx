@@ -9,6 +9,7 @@ const Sidebar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isServicesOpen, setIsServicesOpen] = useState(false);
     const [isWorkforceOpen, setIsWorkforceOpen] = useState(false);
+
     useEffect(() => {
         const handleToggleMobileMenu = (event: CustomEvent) => {
             setIsMobileMenuOpen(event.detail);
@@ -178,6 +179,63 @@ const Sidebar = () => {
                                 </Link>
                             </div>
                         </div>
+
+                        {/* Customers Dropdown */}
+                        <Link
+                            href="/customers"
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                                pathname === '/customers'
+                                    ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
+                                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                            }`}
+                            onClick={closeMobileMenu}
+                        >
+                            <i className="fas fa-users w-5"></i>
+                            <span>Customers</span>
+                        </Link>
+
+                        {/* Oncalls Dropdown */}
+                        <Link
+                            href="/oncalls"
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                                pathname === '/oncalls'
+                                    ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
+                                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                            }`}
+                            onClick={closeMobileMenu}
+                        >
+                            <i className="fas fa-phone w-5"></i>
+                            <span>On Calls</span>
+                        </Link>
+
+                        {/* Attandance Dropdown */}
+                        <Link
+                            href="/attandance"
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                                pathname === '/attandance'
+                                    ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
+                                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                            }`}
+                            onClick={closeMobileMenu}
+                        >
+                            <i className="fas fa-clock w-5"></i>
+                            <span>Attandance</span>
+                        </Link>
+
+                        {/* Masters Dropdown */}
+                        <Link
+                            href="/masters"
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                                pathname === '/masters'
+                                    ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
+                                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                            }`}
+                            onClick={closeMobileMenu}
+                        >
+                            <i className="fas fa-gear w-5"></i>
+                            <span>Masters</span>
+                        </Link>
+                        
                     </div>
                 </div>
             </nav>

@@ -20,6 +20,9 @@ interface ApiEndpoints {
 
     listStaffs: string;
     staffDetail: (slug: string) => string;
+
+    listCustomers: string;
+    customerDetail: (slug: string) => string;
 }
 
 interface Api {
@@ -31,8 +34,8 @@ interface Api {
 }
 
 const api: Api = {
-    baseUrl: 'https://ecotonicserp.pythonanywhere.com/api',
-    // baseUrl: 'http://127.0.0.1:8000/api',
+    // baseUrl: 'https://ecotonicserp.pythonanywhere.com/api',
+    baseUrl: 'http://127.0.0.1:8000/api',
 
     endpoints: {
         login: '/auth/token/',
@@ -52,6 +55,9 @@ const api: Api = {
 
         listStaffs: '/workforce/staffs/',
         staffDetail: (slug: string) => `/workforce/staff/${slug}/`,
+
+        listCustomers: '/customers/customers/',
+        customerDetail: (slug: string) => `/customers/customer/${slug}/`,
     },
 
     getHeaders: (withAuth: boolean = true): HeadersInit => {

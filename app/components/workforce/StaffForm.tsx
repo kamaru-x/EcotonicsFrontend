@@ -42,7 +42,7 @@ const StaffForm = ({ fetchStaffs, setCreate, editData }: StaffFormProps) => {
                 email: editData.user_data.email || '',
                 photo: null,
                 department: editData.department || '',
-                designation: editData.designation || '',
+                designation: editData.designation_data?.id?.toString() || '',
                 location: editData.location || '',
                 aadhar: editData.aadhar || '',
                 blood: editData.blood || '',
@@ -54,10 +54,21 @@ const StaffForm = ({ fetchStaffs, setCreate, editData }: StaffFormProps) => {
                 username: editData.username || '',
                 password: editData.password || '',
             });
+            // Fetch designations for the department when editing
+            if (editData.department) {
+                api.fetch(`${api.endpoints.listDesignations}?department=${editData.department}`)
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.data?.designations) {
+                            setDesignations(result.data.designations);
+                        }
+                    })
+                    .catch(() => setDesignations([]));
+            }
         } else {
             setStaffData({ first_name: '', mobile: '', email: '', photo: null, department: '', designation: '', location: '', aadhar: '', blood: '', contact_name: '', contact_number: '', relation: '', address: '', staff_wage: 0, username: '', password: '' });
         }
-    }, [editData]);
+    }, [editData, api]);
 
     const handleChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target as HTMLInputElement;
