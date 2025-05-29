@@ -89,3 +89,24 @@ export interface Customer {
     mobile: string;
     email: string;
 }
+
+export interface OnCall {
+    id: number;
+    slug: string;
+    status: Status;
+    date: string;
+    type: CustomerType;
+    work_type: 'individual' | 'enterprise';
+    site_name: string;
+    customer: string;
+    customer_data: Customer;
+    category: string;
+    category_data: Category;
+    service: string;
+    service_data: Service;
+    name?: string;
+    mobile?: string;
+    email?: string;
+    location?: string;
+    info: string;
+}

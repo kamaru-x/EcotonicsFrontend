@@ -20,7 +20,7 @@ const page = () => {
     const api = useApi()
 
     const [create, setCreate] = useState(false)
-    const [activeTab, setActiveTab] = useState<'INDUSTRIAL' | 'INDIVIDUAL'>('INDUSTRIAL')
+    const [activeTab, setActiveTab] = useState<'ENTERPRICE' | 'INDIVIDUAL'>('ENTERPRICE')
     const [editCustomer, setEditCustomer] = useState<Customer | null>(null)
     const [enterpriseCustomers, setEnterpriseCustomers] = useState<Customer[]>([])
     const [individualCustomers, setIndividualCustomers] = useState<Customer[]>([])
@@ -121,8 +121,8 @@ const page = () => {
                 </div>
 
                 <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0 mt-8">
-                    <button onClick={() => setActiveTab('INDUSTRIAL')} className={`tab-button w-full py-2 rounded-lg shadow-md focus:outline-none transition-colors duration-200
-                        ${ activeTab === 'INDUSTRIAL' ? 'bg-gradient-to-r from-blue-400 to-blue-500 text-white': 'text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800'}`}> INDUSTRIAL
+                    <button onClick={() => setActiveTab('ENTERPRICE')} className={`tab-button w-full py-2 rounded-lg shadow-md focus:outline-none transition-colors duration-200
+                        ${ activeTab === 'ENTERPRICE' ? 'bg-gradient-to-r from-blue-400 to-blue-500 text-white': 'text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800'}`}> ENTERPRICE
                     </button>
 
                     <button onClick={() => setActiveTab('INDIVIDUAL')} className={`tab-button w-full py-2 rounded-lg shadow-md focus:outline-none transition-colors duration-200
@@ -146,12 +146,12 @@ const page = () => {
                     </div>
                     {create ? (
                         <CustomersForm 
-                            fetchCustomers={activeTab === 'INDUSTRIAL' ? fetchEnterpriseCustomers : fetchIndividualCustomers} 
+                            fetchCustomers={activeTab === 'ENTERPRICE' ? fetchEnterpriseCustomers : fetchIndividualCustomers} 
                             setCreate={handleCancel} 
                             editData={editCustomer}
                         />
                     ) : (
-                        activeTab === 'INDUSTRIAL' ? (
+                        activeTab === 'ENTERPRICE' ? (
                             <CustomersTable 
                                 customers={enterpriseCustomers} 
                                 fetchCustomers={fetchEnterpriseCustomers} 
