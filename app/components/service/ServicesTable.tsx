@@ -18,7 +18,7 @@ const ServicesTable = ({ services, fetchServices, onEdit }: ServicesTableProps) 
         try {
             const response = await api.fetch(api.endpoints.serviceDetail(slug), { 
                 method: 'DELETE',
-                headers: {
+                headers: {  
                     'Content-Type': 'application/json'
                 }
             })
@@ -92,12 +92,6 @@ const ServicesTable = ({ services, fetchServices, onEdit }: ServicesTableProps) 
                                         </span>
                                     </td>
                                     <td className="px-6 py-6 text-center whitespace-nowrap text-sm font-medium">
-                                        <button
-                                            className="text-green-600 hover:text-green-900 dark:text-green-500 dark:hover:text-green-400 transition-colors duration-150 mx-4"
-                                            title="View category"
-                                        >
-                                            <i className="fas fa-eye"></i>
-                                        </button>
                                         <button
                                             onClick={() => onEdit(service)}
                                             className="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-400 transition-colors duration-150 mx-4"

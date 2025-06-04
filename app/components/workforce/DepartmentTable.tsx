@@ -3,6 +3,7 @@ import { useApi } from '@/app/context/ApiContext'
 import { toast } from 'react-toastify'
 import { useDeleteModal } from '@/app/context/DeleteModalContext'
 import { Category, Department } from '@/app/types/interface'
+import { useRouter } from 'next/navigation'
 
 interface DepartmentsTableProps {
     departments: Department[];
@@ -13,6 +14,11 @@ interface DepartmentsTableProps {
 const DepartmentTable = ({ departments, fetchDepartments, onEdit }: DepartmentsTableProps) => {
     const api = useApi()
     const { showDeleteModal } = useDeleteModal()
+    const router = useRouter()
+
+    const handleView = (slug: string) => {
+        router.push(`/workforce/departments/${slug}`)
+    }
 
     const deleteDepartment = async (slug: string) => {
         try {
@@ -82,7 +88,8 @@ const DepartmentTable = ({ departments, fetchDepartments, onEdit }: DepartmentsT
                                     <td className="px-6 py-6 text-center whitespace-nowrap text-sm font-medium">
                                         <button
                                             className="text-green-600 hover:text-green-900 dark:text-green-500 dark:hover:text-green-400 transition-colors duration-150 mx-4"
-                                            title="View category"
+                                            title="View department"
+                                            onClick={() => handleView(department.slug)}
                                         >
                                             <i className="fas fa-eye"></i>
                                         </button>

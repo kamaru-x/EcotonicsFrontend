@@ -3,6 +3,7 @@ import { useApi } from '@/app/context/ApiContext'
 import { toast } from 'react-toastify'
 import { useDeleteModal } from '@/app/context/DeleteModalContext'
 import { Category } from '@/app/types/interface'
+import { useRouter } from 'next/navigation'
 
 interface CategoriesTableProps {
     categories: Category[];
@@ -13,7 +14,8 @@ interface CategoriesTableProps {
 const CategoriesTable = ({ categories, fetchCategories, onEdit }: CategoriesTableProps) => {
     const api = useApi()
     const { showDeleteModal } = useDeleteModal()
-
+    const router = useRouter()
+    
     const deleteCategory = async (slug: string) => {
         try {
             const response = await api.fetch(api.endpoints.categoryDetail(slug), { 
@@ -86,12 +88,6 @@ const CategoriesTable = ({ categories, fetchCategories, onEdit }: CategoriesTabl
                                         </span>
                                     </td>
                                     <td className="px-6 py-6 text-center whitespace-nowrap text-sm font-medium">
-                                        <button
-                                            className="text-green-600 hover:text-green-900 dark:text-green-500 dark:hover:text-green-400 transition-colors duration-150 mx-4"
-                                            title="View category"
-                                        >
-                                            <i className="fas fa-eye"></i>
-                                        </button>
                                         <button
                                             onClick={() => onEdit(category)}
                                             className="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-400 transition-colors duration-150 mx-4"

@@ -10,6 +10,7 @@ const Sidebar = () => {
     const [isServicesOpen, setIsServicesOpen] = useState(false);
     const [isWorkforceOpen, setIsWorkforceOpen] = useState(false);
 
+    // Handle mobile menu toggle
     useEffect(() => {
         const handleToggleMobileMenu = (event: CustomEvent) => {
             setIsMobileMenuOpen(event.detail);
@@ -26,6 +27,12 @@ const Sidebar = () => {
         setIsMobileMenuOpen(false);
     }, [pathname]);
 
+    // Auto-expand dropdowns based on current path
+    useEffect(() => {
+        setIsServicesOpen(pathname.startsWith('/service'));
+        setIsWorkforceOpen(pathname.startsWith('/workforce'));
+    }, [pathname]);
+
     const closeMobileMenu = () => {
         setIsMobileMenuOpen(false);
         window.dispatchEvent(new CustomEvent('toggleMobileMenu', { detail: false }));
@@ -39,6 +46,25 @@ const Sidebar = () => {
         setIsWorkforceOpen(!isWorkforceOpen);
     };
 
+    // Helper function to check if a path is active
+    const isActive = (path: string, exact: boolean = false) => {
+        if (exact) {
+            return pathname === path;
+        }
+        // Handle detail pages
+        if (pathname.includes('/[slug]') || pathname.includes('/[id]')) {
+            return pathname.startsWith(path);
+        }
+        return pathname.startsWith(path);
+    };
+
+    // Helper function to get active classes
+    const getActiveClasses = (path: string, exact: boolean = false) => {
+        return isActive(path, exact)
+            ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
+            : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50';
+    };
+
     return (
         <>
             {/* Overlay for mobile */}
@@ -50,22 +76,18 @@ const Sidebar = () => {
             />
 
             {/* Sidebar */}
-            <nav className={`fixed top-5 left-4 lg:left-5 p-4 w-[calc(100%-2rem)] lg:w-64 h-[calc(100vh-2.5rem)] bg-white dark:bg-gray-800 rounded-xl shadow-md z-50 transition-all duration-300 ease-in-out ${
+            <aside className={`fixed top-5 left-4 lg:left-5 p-4 w-[calc(100%-2rem)] lg:w-64 h-[calc(100vh-2.5rem)] bg-white dark:bg-gray-800 rounded-xl shadow-md z-50 transition-all duration-300 ease-in-out ${
                 isMobileMenuOpen ? 'translate-x-0 opacity-100' : '-translate-x-full lg:translate-x-0 opacity-0 lg:opacity-100'
             }`}>
                 <div className="flex flex-col h-full">
-                    <div className="hidden lg:flex items-center justify-center mb-8">
+                    <div className="flex items-center justify-center mb-8">
                         <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Ecotonics</h1>
                     </div>
 
-                    <div className="flex-1 space-y-2 mt-16 lg:mt-0">
+                    <div className="flex-1 space-y-2">
                         <Link
                             href="/dashboard"
-                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                                pathname === '/dashboard'
-                                    ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
-                                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                            }`}
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${getActiveClasses('/dashboard', true)}`}
                             onClick={closeMobileMenu}
                         >
                             <i className="fas fa-chart-line w-5"></i>
@@ -76,11 +98,7 @@ const Sidebar = () => {
                         <div className="relative">
                             <button
                                 onClick={toggleServices}
-                                className={`w-full flex items-center justify-between space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                                    pathname.startsWith('/service')
-                                        ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
-                                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                                }`}
+                                className={`w-full flex items-center justify-between space-x-3 px-4 py-3 rounded-lg transition-colors ${getActiveClasses('/service')}`}
                             >
                                 <div className="flex items-center space-x-3">
                                     <i className="fas fa-gears w-5"></i>
@@ -95,11 +113,7 @@ const Sidebar = () => {
                             }`}>
                                 <Link
                                     href="/service/categories"
-                                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors ${
-                                        pathname === '/service/categories'
-                                            ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
-                                            : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                                    }`}
+                                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors ${getActiveClasses('/service/categories')}`}
                                     onClick={closeMobileMenu}
                                 >
                                     <i className="fas fa-tags w-5"></i>
@@ -107,11 +121,7 @@ const Sidebar = () => {
                                 </Link>
                                 <Link
                                     href="/service/services"
-                                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors ${
-                                        pathname === '/service/services'
-                                            ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
-                                            : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                                    }`}
+                                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors ${getActiveClasses('/service/services')}`}
                                     onClick={closeMobileMenu}
                                 >
                                     <i className="fas fa-list w-5"></i>
@@ -120,15 +130,11 @@ const Sidebar = () => {
                             </div>
                         </div>
 
-                        {/* Services Dropdown */}
+                        {/* Workforce Dropdown */}
                         <div className="relative">
                             <button
                                 onClick={toggleWorkforce}
-                                className={`w-full flex items-center justify-between space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                                    pathname.startsWith('/workforce')
-                                        ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
-                                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                                }`}
+                                className={`w-full flex items-center justify-between space-x-3 px-4 py-3 rounded-lg transition-colors ${getActiveClasses('/workforce')}`}
                             >
                                 <div className="flex items-center space-x-3">
                                     <i className="fas fa-users w-5"></i>
@@ -143,11 +149,7 @@ const Sidebar = () => {
                             }`}>
                                 <Link
                                     href="/workforce/departments"
-                                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors ${
-                                        pathname === '/workforce/departments'
-                                            ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
-                                            : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                                    }`}
+                                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors ${getActiveClasses('/workforce/departments')}`}
                                     onClick={closeMobileMenu}
                                 >
                                     <i className="fas fa-building w-5"></i>
@@ -155,11 +157,7 @@ const Sidebar = () => {
                                 </Link>
                                 <Link
                                     href="/workforce/designations"
-                                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors ${
-                                        pathname === '/workforce/designations'
-                                            ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
-                                            : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                                    }`}
+                                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors ${getActiveClasses('/workforce/designations')}`}
                                     onClick={closeMobileMenu}
                                 >
                                     <i className="fas fa-list w-5"></i>
@@ -167,11 +165,7 @@ const Sidebar = () => {
                                 </Link>
                                 <Link
                                     href="/workforce/staffs"
-                                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors ${
-                                        pathname === '/workforce/staffs'
-                                            ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
-                                            : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                                    }`}
+                                    className={`flex items-center space-x-3 px-4 py-2 rounded-lg transition-colors ${getActiveClasses('/workforce/staffs')}`}
                                     onClick={closeMobileMenu}
                                 >
                                     <i className="fas fa-users w-5"></i>
@@ -180,65 +174,48 @@ const Sidebar = () => {
                             </div>
                         </div>
 
-                        {/* Customers Dropdown */}
+                        {/* Customers Link */}
                         <Link
                             href="/customers"
-                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                                pathname === '/customers'
-                                    ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
-                                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                            }`}
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${getActiveClasses('/customers')}`}
                             onClick={closeMobileMenu}
                         >
                             <i className="fas fa-users w-5"></i>
                             <span>Customers</span>
                         </Link>
 
-                        {/* Oncalls Dropdown */}
+                        {/* Oncalls Link */}
                         <Link
                             href="/oncalls"
-                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                                pathname === '/oncalls'
-                                    ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
-                                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                            }`}
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${getActiveClasses('/oncalls')}`}
                             onClick={closeMobileMenu}
                         >
                             <i className="fas fa-phone w-5"></i>
                             <span>On Calls</span>
                         </Link>
 
-                        {/* Attandance Dropdown */}
+                        {/* Attendance Link */}
                         <Link
-                            href="/attandance"
-                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                                pathname === '/attandance'
-                                    ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
-                                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                            }`}
+                            href="/attendance"
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${getActiveClasses('/attendance')}`}
                             onClick={closeMobileMenu}
                         >
                             <i className="fas fa-clock w-5"></i>
-                            <span>Attandance</span>
+                            <span>Attendance</span>
                         </Link>
 
-                        {/* Masters Dropdown */}
+                        {/* Masters Link */}
                         <Link
                             href="/masters"
-                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                                pathname === '/masters'
-                                    ? 'bg-blue-50 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400'
-                                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
-                            }`}
+                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${getActiveClasses('/masters')}`}
                             onClick={closeMobileMenu}
                         >
                             <i className="fas fa-gear w-5"></i>
                             <span>Masters</span>
                         </Link>
-                        
                     </div>
                 </div>
-            </nav>
+            </aside>
         </>
     );
 };

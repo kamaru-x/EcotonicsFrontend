@@ -6,8 +6,6 @@ import { useState, useEffect } from 'react';
 
 const Header = () => {
     const pathname = usePathname();
-    const currentPage = pathname.split('/')[1] || 'dashboard';
-    const pageTitle = currentPage.charAt(0).toUpperCase() + currentPage.slice(1);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     // Reset mobile menu state when pathname changes
@@ -22,6 +20,45 @@ const Header = () => {
         window.dispatchEvent(new CustomEvent('toggleMobileMenu', { detail: newState }));
     };
 
+    // Generate breadcrumb items
+    const generateBreadcrumbs = () => {
+        const paths = pathname.split('/').filter(Boolean);
+        const breadcrumbs = paths.map((path, index) => {
+            const href = `/${paths.slice(0, index + 1).join('/')}`;
+            let label = path.charAt(0).toUpperCase() + path.slice(1);
+            
+            // Customize labels for specific paths
+            const labelMap: { [key: string]: string } = {
+                'service': 'Services',
+                'workforce': 'Workforce',
+                'categories': 'Categories',
+                'services': 'Service List',
+                'departments': 'Departments',
+                'designations': 'Designations',
+                'staffs': 'Staff List',
+                'customers': 'Customers',
+                'oncalls': 'On Calls',
+                'attendance': 'Attendance',
+                'masters': 'Masters',
+                'dashboard': 'Dashboard'
+            };
+            
+            // Handle detail pages
+            if (path === '[slug]' || path === '[id]') {
+                label = 'Details';
+            } else {
+                label = labelMap[path] || label;
+            }
+
+            const isLast = index === paths.length - 1;
+            return { href, label, isLast };
+        });
+
+        return breadcrumbs;
+    };
+
+    const breadcrumbs = generateBreadcrumbs();
+
     return (
         <nav className="bg-white dark:bg-gray-800 rounded-xl shadow-md fixed top-5 right-4 left-4 lg:right-5 lg:left-[calc(16rem+2.5rem)] z-[40]">
             <div className="flex items-center h-16 px-4 lg:px-6">
@@ -34,11 +71,15 @@ const Header = () => {
                         <i className={`fas ${isMobileMenuOpen ? 'fa-times' : 'fa-bars'} text-lg`}></i>
                     </button>
                     <div className="hidden lg:flex items-center space-x-2">
-                        <Link href="/dashboard" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                            Application
-                        </Link>
-                        <span className="text-gray-400 dark:text-gray-500">/</span>
-                        <span className="font-medium text-gray-800 dark:text-gray-200">{pageTitle}</span>
+                        <span className="text-gray-600 dark:text-gray-300">Dashboard</span>
+                        {breadcrumbs.map((crumb, index) => (
+                            <div key={index} className="flex items-center space-x-2">
+                                <span className="text-gray-400 dark:text-gray-500">/</span>
+                                <span className="text-gray-600 dark:text-gray-300">
+                                    {crumb.label}
+                                </span>
+                            </div>
+                        ))}
                     </div>
                 </div>
 
