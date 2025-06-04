@@ -1,29 +1,20 @@
 "use client";
-
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { Category } from "@/app/types/interface";
 import { useApi } from "@/app/context/ApiContext";
 import { toast } from "react-toastify";
-
+import { useRouter } from "next/navigation";
 import OverviewCard from "@/app/components/elements/OverviewCard";
-import ThemeToggle from "@/app/components/ThemeToggle";
 import CategoriesTable from "@/app/components/service/CategoriesTable";
-import CategoryForm from "@/app/components/service/CategoryForm";
-import { Category } from "@/app/types/interface";
 
-interface CategoryStats {
-    total_categories: number;
-    active_categories: number;
-    inactive_categories: number;
-}
-
-const CategoriesPage = () => {
-    const api = useApi();
-
-    const [create, setCreate] = useState(false);
-    const [editCategory, setEditCategory] = useState<Category | null>(null);
+function page() {
     const [categories, setCategories] = useState<Category[]>([]);
+    const api = useApi();
+    const router = useRouter();
 
-    const [stats, setStats] = useState<CategoryStats>({
+    console.log(categories, "categories");
+
+    const [stats, setStats] = useState({
         total_categories: 0,
         active_categories: 0,
         inactive_categories: 0,
@@ -55,28 +46,16 @@ const CategoriesPage = () => {
         }
     }, [api]);
 
-    const handleEdit = (category: Category) => {
-        setEditCategory(category);
-        setCreate(true);
-    };
-
-    const handleCreate = () => {
-        setEditCategory(null);
-        setCreate(true);
-    };
-
-    const handleCancel = () => {
-        setEditCategory(null);
-        setCreate(false);
-    };
-
     useEffect(() => {
         fetchCategories();
     }, [fetchCategories]);
+    const handleEdit = (category: Category) => {
+        router.push(`/services/categories/${category.slug}/edit/`);
+    };
 
     return (
-        <div className="min-h-screen mx-5">
-            <div className="w-full">
+        <>
+            <div className="mx-5">
                 <div className="grid md:grid-cols-3 gap-6 mt-8">
                     <OverviewCard
                         color="bg-gradient-to-r from-blue-400 to-blue-500"
@@ -97,42 +76,30 @@ const CategoriesPage = () => {
                         value={stats.inactive_categories}
                     />
                 </div>
-
                 <div className="mt-8 pb-8">
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-                            {create
-                                ? editCategory
-                                    ? "Edit Category"
-                                    : "Create Category"
-                                : "Service Categories"}
+                            Service Categories
                         </h2>
-                        {!create && (
-                            <button
-                                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200"
-                                onClick={handleCreate}
-                            >
-                                Add Category
-                            </button>
-                        )}
+
+                        <button
+                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors duration-200"
+                            onClick={() => {
+                                router.push("/services/categories/create");
+                            }}
+                        >
+                            Add Category
+                        </button>
                     </div>
-                    {create ? (
-                        <CategoryForm
-                        // fetchCategories={fetchCategories}
-                        // setCreate={handleCancel}
-                        // editData={editCategory}
-                        />
-                    ) : (
-                        <CategoriesTable
-                            categories={categories}
-                            fetchCategories={fetchCategories}
-                            onEdit={handleEdit}
-                        />
-                    )}
+                    <CategoriesTable
+                        categories={categories}
+                        fetchCategories={fetchCategories}
+                        onEdit={handleEdit}
+                    />
                 </div>
             </div>
-        </div>
+        </>
     );
-};
+}
 
-export default CategoriesPage;
+export default page;
